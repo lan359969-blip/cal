@@ -108,3 +108,43 @@
 
 <script>
 /* ===== 以下 do_cal / do_CLcal / 原函数体 完全未动 ===== */
+/* ===== 新增 BEGIN：自动转存 + 微信增强识别 ===== */
+
+(function(){
+    const ids = ["12","34","56"];
+    ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if(el){
+            el.addEventListener("input",()=>{
+                localStorage.setItem("water_"+id, el.value);
+            });
+            const v = localStorage.getItem("water_"+id);
+            if(v) el.value = v;
+        }
+    });
+})();
+
+/* 覆盖 readCpy 的“能力”，但不删除原函数 */
+const _oldReadCpy = readCpy;
+readCpy = function(){
+    const t = hiddenTxt.value;
+    let a = t.match(/(1[-－]2系|一二系).*?(\d+)/);
+    let b = t.match(/(3[-－]4系|三四系).*?(\d+)/);
+    let c = t.match(/(5[-－]6系|五六系).*?(\d+)/);
+    if(a&&b&&c){
+        document.getElementById("12").value=a[2];
+        document.getElementById("34").value=b[2];
+        document.getElementById("56").value=c[2];
+        localStorage.setItem("water_12",a[2]);
+        localStorage.setItem("water_34",b[2]);
+        localStorage.setItem("water_56",c[2]);
+    }else{
+        _oldReadCpy();
+    }
+};
+
+/* ===== 新增 END ===== */
+</script>
+
+</body>
+</html>

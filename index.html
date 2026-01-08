@@ -108,7 +108,24 @@ input,textarea{width:100%;height:40px;font-size:16px;}
     晚些时候的数据:<input type="number" id="now"><br>
     <button onclick="doHN()">计算混凝剂班耗</button><br>
     <textarea id="result_HN" style="height: 40px;"></textarea>
-     -->
+     --><script>
+  // 页面加载时恢复数据
+  window.onload = function () {
+    document.querySelectorAll("input").forEach(input => {
+      const key = "cal_" + input.id;
+      if (localStorage.getItem(key)) {
+        input.value = localStorage.getItem(key);
+      }
+    });
+    calculate();
+  };
+
+  // 输入时自动保存
+  function autoSave(el) {
+    localStorage.setItem("cal_" + el.id, el.value);
+    calculate();
+  }
+</script>
 </body>
 
 </html>

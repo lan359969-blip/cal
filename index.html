@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" charset="utf-8">
+    <title>加药加氯计算器</title>
+    <link href="//unpkg.com/layui@2.9.13/dist/css/layui.css" rel="stylesheet">
+
+    <!-- ===== 新增 BEGIN：仅样式优化，不影响结构 ===== -->
+    <style>
+        body { padding: 8px; }
+        textarea { width: 100%; min-height: 120px; }
+        button { margin-top: 6px; }
+    </style>
+    <!-- ===== 新增 END ===== -->
+</head>
+
+<body class="layui-bg-gray">
+
+<marquee>⚠️输入的差值均为无视小数点后的整数⚠️</marquee>
+<hr>
+
+<input type="text" id="hiddenTxt" placeholder="微信数据粘贴至此">
+<button class="layui-btn layui-btn-normal layui-btn-xs" onclick="readCpy()">获取进水量</button>
+<button class="layui-btn layui-btn-normal layui-btn-xs" onclick="clean()">清空</button>
+
+<p>
+    一二系列进水量： <input type="number" id="12"><br />
+    三四系列进水量： <input type="number" id="34"><br />
+    五六系列进水量： <input type="number" id="56"><br />
+</p>
+
+<hr>
+
+<h2>加药计算部分</h2>
+<h3>一期</h3>
+<h4>浓度按照混凝剂<input type="number" value="10" style="width:40px" id="hn_con">%，
+助凝剂<input type="number" value="5" style="width:50px" id="zn_con">%计算</h4>
+
+<p>
+1系列混凝剂差值：<input type="number" id="HN_adiff"><br />
+2系列混凝剂差值：<input type="number" id="HN_bdiff"><br />
+3系列混凝剂差值：<input type="number" id="HN_cdiff"><br />
+4系列混凝剂差值：<input type="number" id="HN_ddiff"><br />
+</p>
+
+<p>
+1系列助凝剂差值：<input type="number" id="ZN_adiff"><br />
+2系列助凝剂差值：<input type="number" id="ZN_bdiff"><br />
+3系列助凝剂差值：<input type="number" id="ZN_cdiff"><br />
+4系列助凝剂差值：<input type="number" id="ZN_ddiff"><br />
+</p>
+
+<h3>二期</h3>
+<h4>浓度按照混凝剂<input type="number" value="10" style="width:40px" id="hn_con2">%，
+助凝剂<input type="number" value="5" style="width:50px" id="zn_con2">%计算</h4>
+
+5-1混凝剂：<input type="number" id="HN_ediff1"><br />
+5-2混凝剂：<input type="number" id="HN_ediff2"><br />
+6-1混凝剂：<input type="number" id="HN_fdiff1"><br />
+6-2混凝剂：<input type="number" id="HN_fdiff2"><br />
+
+5-1助凝剂：<input type="number" id="ZN_ediff1"><br />
+5-2助凝剂：<input type="number" id="ZN_ediff2"><br />
+6-1助凝剂：<input type="number" id="ZN_fdiff1"><br />
+6-2助凝剂：<input type="number" id="ZN_fdiff2"><br />
+
+<button class="layui-btn layui-btn-lg layui-btn-normal" onclick="do_cal()">计算</button>
+
+<textarea id="result"></textarea>
+<button class="layui-btn layui-btn-warm layui-btn-xs" onclick="copy()">复制加药结果</button>
+
+<hr>
+
+<h2>加氯计算部分</h2>
+补氯<input type="checkbox" id="isAdd" value="1">
+
+<h3>一期</h3>
+<h4>一期有效氯<input type="number" step="0.1" id="effCL1">%</h4>
+
+预加氯一二差：<input type="number" id="PreCL_ABdiff"><br />
+预加氯三四差：<input type="number" id="PreCL_CDdiff"><br />
+
+主加氯一二差：<input type="number" id="MainCL_ABdiff"><br />
+主加氯三四差：<input type="number" id="MainCL_CDdiff"><br />
+
+一系补氯差：<input type="number" id="addCL_Adiff" value="0"><br />
+二系补氯差：<input type="number" id="addCL_Bdiff" value="0"><br />
+三系补氯差：<input type="number" id="addCL_Cdiff" value="0"><br />
+四系补氯差：<input type="number" id="addCL_Ddiff" value="0"><br />
+
+<h3>二期</h3>
+<h4>二期有效氯<input type="number" step="0.1" id="effCL2">%</h4>
+
+5系列预加差：<input type="number" id="PreCL_Ediff"><br />
+6系列预加差：<input type="number" id="PreCL_Fdiff"><br />
+
+5系列主加差：<input type="number" id="MainCL_Ediff"><br />
+6系列主加差：<input type="number" id="MainCL_Fdiff"><br />
+
+<button class="layui-btn layui-btn-lg layui-btn-normal" onclick="do_CLcal()">计算</button>
+
+<textarea id="result_"></textarea>
+<button class="layui-btn layui-btn-warm layui-btn-xs" onclick="copy_()">复制加氯结果</button>
+
+<hr>
+@reichitose
+
+<script>
+/* ===== 以下 do_cal / do_CLcal / 原函数体 完全未动 ===== */

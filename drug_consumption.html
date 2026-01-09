@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>药剂消耗核算</title>
+<link href="//unpkg.com/layui@2.9.13/dist/css/layui.css" rel="stylesheet">
+<style>
+body{padding:10px}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #ccc;padding:4px;text-align:center}
+input,textarea{width:100%;box-sizing:border-box}
+.section{margin-bottom:30px}
+textarea{min-height:120px}
+.footer{margin-top:20px;color:#666;font-size:12px}
+</style>
+
+<style>
+input{
+  min-width:120px;
+  font-size:16px;
+}
+</style>
+
+</head>
+<body>
+<div class="layui-btn-container" style="margin-bottom:15px">
+    <button
+        class="layui-btn layui-btn-primary"
+        onclick="window.location.href='index.html'">
+        ⬅ 返回加药计算
+    </button>
+
+    <button
+        class="layui-btn layui-btn-warm"
+        onclick="history.back()">
+        ↩ 返回上一页
+    </button>
+</div>
+<h1>药剂消耗核算</h1>
+
+<div class="section" id="unified_concentration">
+  <h2>统一药剂浓度（%）</h2>
+  <table>
+    <tr><th></th><th>一期</th><th>二期</th></tr>
+    <tr>
+      <td>混凝</td>
+      <td><input id="uc_p1_m" placeholder="如 5 表示 5%"></td>
+      <td><input id="uc_p2_m" placeholder="如 5 表示 5%"></td>
+    </tr>
+    <tr>
+      <td>助凝</td>
+      <td><input id="uc_p1_a" placeholder="如 3 表示 3%"></td>
+      <td><input id="uc_p2_a" placeholder="如 3 表示 3%"></td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+<div class="section"><h2>一期 · 混凝</h2>
+<table>
+<tr><th>时间</th><th>1</th><th>2</th><th>3</th><th>4</th><th>一二系消耗</th><th>三四系消耗</th></tr>
+<tr><td>8</td><td><input id="p1m18"></td><td><input id="p1m28"></td><td><input id="p1m38"></td><td><input id="p1m48"></td><td rowspan="2" id="o_p1_m_12"></td><td rowspan="2" id="o_p1_m_34"></td></tr>
+<tr><td>17</td><td><input id="p1m117"></td><td><input id="p1m217"></td><td><input id="p1m317"></td><td><input id="p1m417"></td></tr>
+</table></div>
+
+<div class="section"><h2>一期 · 助凝</h2>
+<table>
+<tr><th>时间</th><th>1</th><th>2</th><th>3</th><th>4</th><th>一二系消耗</th><th>三四系消耗</th></tr>
+<tr><td>8</td><td><input id="p1a18"></td><td><input id="p1a28"></td><td><input id="p1a38"></td><td><input id="p1a48"></td><td rowspan="2" id="o_p1_a_12"></td><td rowspan="2" id="o_p1_a_34"></td></tr>
+<tr><td>17</td><td><input id="p1a117"></td><td><input id="p1a217"></td><td><input id="p1a317"></td><td><input id="p1a417"></td></tr>
+</table></div>
+
+<div class="section"><h2>二期 · 混凝</h2>
+<table>
+<tr><th>时间</th><th>5-1</th><th>5-2</th><th>6-1</th><th>6-2</th><th>5系消耗</th><th>6系消耗</th></tr>
+<tr><td>8</td><td><input id="p2m518"></td><td><input id="p2m528"></td><td><input id="p2m618"></td><td><input id="p2m628"></td><td rowspan="2" id="o_p2_m_5"></td><td rowspan="2" id="o_p2_m_6"></td></tr>
+<tr><td>17</td><td><input id="p2m5117"></td><td><input id="p2m5217"></td><td><input id="p2m6117"></td><td><input id="p2m6217"></td></tr>
+</table></div>
+
+<div class="section"><h2>二期 · 助凝</h2>
+<table>
+<tr><th>时间</th><th>5-1</th><th>5-2</th><th>6-1</th><th>6-2</th><th>5系消耗</th><th>6系消耗</th></tr>
+<tr><td>8</td><td><input id="p2a518"></td><td><input id="p2a528"></td><td><input id="p2a618"></td><td><input id="p2a628"></td><td rowspan="2" id="o_p2_a_5"></td><td rowspan="2" id="o_p2_a_6"></td></tr>
+<tr><td>17</td><td><input id="p2a5117"></td><td><input id="p2a5217"></td><td><input id="p2a6117"></td><td><input id="p2a6217"></td></tr>
+</table></div>
+
+<h2>自动生成班报 / 日报</h2>
+<textarea id="report"></textarea>
+
+<button onclick="copyReport()" style="margin-top:8px;width:100%;height:44px;font-size:16px;">
+📋 一键复制班报
+</button>
+<script>
+function copyReport(){
+ const t=document.getElementById('report');
+ t.select();
+ t.setSelectionRange(0,99999);
+ document.execCommand('copy');
+ alert('班报内容已复制，可直接粘贴');
+}
+</script>
+
+
+<div class="footer">计算版本：V1.0.20260109</div>
+
+<script>
+function n(id){return parseFloat(document.getElementById(id).value)||0}
+function save(){document.querySelectorAll('input,textarea').forEach(e=>localStorage.setItem(e.id,e.value))}
+function load(){document.querySelectorAll('input,textarea').forEach(e=>{const v=localStorage.getItem(e.id);if(v!==null)e.value=v})}
+
+function calc(){
+ const p1m12=(n('p1m117')-n('p1m18')+n('p1m217')-n('p1m28'))*n('c_p1_m_12')*1000;
+ const p1m34=(n('p1m317')-n('p1m38')+n('p1m417')-n('p1m48'))*n('c_p1_m_34')*1000;
+ document.getElementById('o_p1_m_12').innerText=p1m12.toFixed(2);
+ document.getElementById('o_p1_m_34').innerText=p1m34.toFixed(2);
+
+ const p1a12=(n('p1a117')-n('p1a18')+n('p1a217')-n('p1a28'))*n('c_p1_a_12')*1000;
+ const p1a34=(n('p1a317')-n('p1a38')+n('p1a417')-n('p1a48'))*n('c_p1_a_34')*1000;
+ document.getElementById('o_p1_a_12').innerText=p1a12.toFixed(2);
+ document.getElementById('o_p1_a_34').innerText=p1a34.toFixed(2);
+
+ const p2m5=(n('p2m5117')-n('p2m518')+n('p2m5217')-n('p2m528'))*n('c_p2_m_5')*1000;
+ const p2m6=(n('p2m6117')-n('p2m618')+n('p2m6217')-n('p2m628'))*n('c_p2_m_6')*1000;
+ document.getElementById('o_p2_m_5').innerText=p2m5.toFixed(2);
+ document.getElementById('o_p2_m_6').innerText=p2m6.toFixed(2);
+
+ const p2a5=(n('p2a5117')-n('p2a518')+n('p2a5217')-n('p2a528'))*n('c_p2_a_5')*1000;
+ const p2a6=(n('p2a6117')-n('p2a618')+n('p2a6217')-n('p2a628'))*n('c_p2_a_6')*1000;
+ document.getElementById('o_p2_a_5').innerText=p2a5.toFixed(2);
+ document.getElementById('o_p2_a_6').innerText=p2a6.toFixed(2);
+
+ document.getElementById('report').value =
+  `药剂消耗日报\n一期混凝：${p1m12.toFixed(2)} / ${p1m34.toFixed(2)}\n一期助凝：${p1a12.toFixed(2)} / ${p1a34.toFixed(2)}\n二期混凝：${p2m5.toFixed(2)} / ${p2m6.toFixed(2)}\n二期助凝：${p2a5.toFixed(2)} / ${p2a6.toFixed(2)}\n版本：V1.0.20260109`;
+ save();
+}
+
+document.querySelectorAll('input').forEach(e=>e.addEventListener('input',calc));
+load();calc();
+</script>
+
+<script>
+(function(){
+  function pct(v){
+    var n=parseFloat(v);
+    if(isNaN(n)) return '';
+    return (n/100).toString();
+  }
+  function bind(srcId, targetIds){
+    var src=document.getElementById(srcId);
+    if(!src) return;
+    src.addEventListener('input', function(){
+      var v=pct(this.value);
+      targetIds.forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){
+          el.value=v;
+          el.dispatchEvent(new Event('input'));
+        }
+      });
+    });
+  }
+
+  // === 对应关系：不改原公式，只改数据来源 ===
+  bind('uc_p1_m',['c_p1_m_12','c_p1_m_34']);
+  bind('uc_p1_a',['c_p1_a_12','c_p1_a_34']);
+  bind('uc_p2_m',['c_p2_m_5','c_p2_m_6']);
+  bind('uc_p2_a',['c_p2_a_5','c_p2_a_6']);
+})();
+</script>
+
+
+<div class="section">
+  <h2>药剂总消耗汇总</h2>
+  <ul>
+    <li>一期混凝总消耗：<span id="tot_p1_m">0.00</span></li>
+    <li>一期助凝总消耗：<span id="tot_p1_a">0.00</span></li>
+    <li>二期混凝总消耗：<span id="tot_p2_m">0.00</span></li>
+    <li>二期助凝总消耗：<span id="tot_p2_a">0.00</span></li>
+  </ul>
+</div>
+
+
+<script>
+(function(){
+  function num(id){
+    var e=document.getElementById(id);
+    if(!e) return 0;
+    var v=parseFloat(e.innerText||e.value||0);
+    return isNaN(v)?0:v;
+  }
+  function update(){
+    document.getElementById('tot_p1_m').innerText=(num('o_p1_m_12')+num('o_p1_m_34')).toFixed(2);
+    document.getElementById('tot_p1_a').innerText=(num('o_p1_a_12')+num('o_p1_a_34')).toFixed(2);
+    document.getElementById('tot_p2_m').innerText=(num('o_p2_m_5')+num('o_p2_m_6')).toFixed(2);
+    document.getElementById('tot_p2_a').innerText=(num('o_p2_a_5')+num('o_p2_a_6')).toFixed(2);
+  }
+  setInterval(update,500);
+})();
+</script>
+
+
+<script>
+(function(){
+  function num(id){
+    var e=document.getElementById(id);
+    if(!e) return 0;
+    var v=parseFloat(e.innerText||e.value||0);
+    return isNaN(v)?0:v;
+  }
+  function appendTotalsToReport(){
+    var r=document.getElementById('report');
+    if(!r) return;
+    var base=r.value||r.innerText||'';
+    var totals =
+      "\n—— 总耗汇总 ——\n" +
+      "一期混凝总耗：" + (num('o_p1_m_12')+num('o_p1_m_34')).toFixed(2) + "\n" +
+      "一期助凝总耗：" + (num('o_p1_a_12')+num('o_p1_a_34')).toFixed(2) + "\n" +
+      "二期混凝总耗：" + (num('o_p2_m_5')+num('o_p2_m_6')).toFixed(2) + "\n" +
+      "二期助凝总耗：" + (num('o_p2_a_5')+num('o_p2_a_6')).toFixed(2);
+    if(!base.includes("—— 总耗汇总 ——")){
+      r.value = base + totals;
+    }
+  }
+  setInterval(appendTotalsToReport, 800);
+})();
+</script>
+
+</body>
+</html>

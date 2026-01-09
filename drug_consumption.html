@@ -16,40 +16,23 @@ textarea{min-height:120px}
 </style>
 </head>
 <body>
-
-<div class="section">
-  <h3>统一药剂浓度（%）</h3>
-  <table>
-    <tr><th>期别</th><th>混凝</th><th>助凝</th></tr>
-    <tr>
-      <td>一期</td>
-      <td><input type="number" id="u_p1_m" style="width:120px"></td>
-      <td><input type="number" id="u_p1_a" style="width:120px"></td>
-    </tr>
-    <tr>
-      <td>二期</td>
-      <td><input type="number" id="u_p2_m" style="width:120px"></td>
-      <td><input type="number" id="u_p2_a" style="width:120px"></td>
-    </tr>
-  </table>
-</div>
-
 <div class="layui-btn-container" style="margin-bottom:15px">
     <button
         class="layui-btn layui-btn-primary"
         onclick="window.location.href='index.html'">
         ⬅ 返回加药计算
     </button>
-
-    <button
-        class="layui-btn layui-btn-warm"
-        onclick="history.back()">
-        ↩ 返回上一页
-    </button>
 </div>
 <h1>药剂消耗核算</h1>
 
-<p>
+<p>浓度（kg/m³）：</p>
+<table>
+<tr><th></th><th>一二系</th><th>三四系</th><th>5系</th><th>6系</th></tr>
+<tr><td>一期混凝</td><td><input id="c_p1_m_12"></td><td><input id="c_p1_m_34"></td><td></td><td></td></tr>
+<tr><td>一期助凝</td><td><input id="c_p1_a_12"></td><td><input id="c_p1_a_34"></td><td></td><td></td></tr>
+<tr><td>二期混凝</td><td></td><td></td><td><input id="c_p2_m_5"></td><td><input id="c_p2_m_6"></td></tr>
+<tr><td>二期助凝</td><td></td><td></td><td><input id="c_p2_a_5"></td><td><input id="c_p2_a_6"></td></tr>
+</table>
 
 <div class="section"><h2>一期 · 混凝</h2>
 <table>
@@ -132,22 +115,5 @@ function calc(){
 document.querySelectorAll('input').forEach(e=>e.addEventListener('input',calc));
 load();calc();
 </script>
-
-<script>
-(function(){
-  function sync(){
-    function v(id){var x=document.getElementById(id);return x&&x.value?Number(x.value)/100:'';}
-    document.querySelectorAll('input').forEach(function(i){
-      if(!i.id) return;
-      if(i.id.includes('p1') && i.id.includes('mix') && v('u_p1_m')!=='') i.value=v('u_p1_m');
-      if(i.id.includes('p1') && i.id.includes('aid') && v('u_p1_a')!=='') i.value=v('u_p1_a');
-      if(i.id.includes('p2') && i.id.includes('mix') && v('u_p2_m')!=='') i.value=v('u_p2_m');
-      if(i.id.includes('p2') && i.id.includes('aid') && v('u_p2_a')!=='') i.value=v('u_p2_a');
-    });
-  }
-  setInterval(sync,300);
-})();
-</script>
-
 </body>
 </html>

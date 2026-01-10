@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>药剂消耗核算</title>
+<link href="//unpkg.com/layui@2.9.13/dist/css/layui.css" rel="stylesheet">
+<style>
+body{padding:10px}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #ccc;padding:4px;text-align:center}
+.input-big{width:100%;box-sizing:border-box;font-size:18px;height:40px;padding:6px 8px}
+.input-small{width:120px;font-size:14px;height:28px;padding:2px 4px}
+textarea{width:100%;box-sizing:border-box;min-height:160px;font-size:15px}
+.section{margin-bottom:30px}
+.footer{margin-top:20px;color:#666;font-size:12px}
+</style>
+
+<style>
+/* === 输入显示增强（6位数不被截断） === */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+input[type="number"] {
+  min-width: 120px;   /* 可完整显示 123456 */
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+/* 保证表格单元格不强制压缩 */
+td, th {
+  min-width: 80px;
+  white-space: nowrap;
+}
+</style>
+
+
+<style>
+/* === 输入框最终显示规范 === */
+
+/* 1️⃣ 浓度输入框：只需两位数宽度 */
+#c_p1_m, #c_p1_a, #c_p2_m, #c_p2_a {
+  min-width: 70px !important;
+  max-width: 80px !important;
+  text-align: center;
+}
+
+/* 2️⃣ 所有数字输入：居中显示 */
+input[type="number"] {
+  text-align: center !important;
+}
+</style>
+
+</head>
+<body>
+
+<!-- 页面切换 -->
+<div style="margin:12px 0;text-align:center;">
+  <button type="button" onclick="location.href='index.html'" style="padding:8px 14px;font-size:15px;">
+    ← 返回首页
+  </button>
+</div>
+
+
+<h1>药剂消耗核算</h1>
+
+<p>浓度（%）：</p>
+<div class="table-wrap"><table>
+<tr><th></th><th>浓度</th></tr>
+<tr><td>一期混凝</td><td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-small" id="c_p1_m"></td></tr>
+<tr><td>一期助凝</td><td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-small" id="c_p1_a"></td></tr>
+<tr><td>二期混凝</td><td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-small" id="c_p2_m"></td></tr>
+<tr><td>二期助凝</td><td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-small" id="c_p2_a"></td></tr>
+</table></div>
+
+<div class="section"><h2>一期 · 混凝</h2>
+<div class="table-wrap"><table>
+<tr><th>时间</th><th>1</th><th>2</th><th>3</th><th>4</th><th>一二系消耗</th><th>三四系消耗</th></tr>
+<tr><td>8</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m18"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m28"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m38"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m48"></td>
+<td rowspan="2" id="o_p1_m_12"></td>
+<td rowspan="2" id="o_p1_m_34"></td></tr>
+<tr><td>17</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m117"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m217"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m317"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1m417"></td></tr>
+</table></div></div>
+
+<div class="section"><h2>一期 · 助凝</h2>
+<div class="table-wrap"><table>
+<tr><th>时间</th><th>1</th><th>2</th><th>3</th><th>4</th><th>一二系消耗</th><th>三四系消耗</th></tr>
+<tr><td>8</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a18"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a28"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a38"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a48"></td>
+<td rowspan="2" id="o_p1_a_12"></td>
+<td rowspan="2" id="o_p1_a_34"></td></tr>
+<tr><td>17</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a117"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a217"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a317"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p1a417"></td></tr>
+</table></div></div>
+
+<div class="section"><h2>二期 · 混凝</h2>
+<div class="table-wrap"><table>
+<tr><th>时间</th><th>5-1</th><th>5-2</th><th>6-1</th><th>6-2</th><th>5系消耗</th><th>6系消耗</th></tr>
+<tr><td>8</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m518"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m528"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m618"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m628"></td>
+<td rowspan="2" id="o_p2_m_5"></td>
+<td rowspan="2" id="o_p2_m_6"></td></tr>
+<tr><td>17</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m5117"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m5217"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m6117"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2m6217"></td></tr>
+</table></div></div>
+
+<div class="section"><h2>二期 · 助凝</h2>
+<div class="table-wrap"><table>
+<tr><th>时间</th><th>5-1</th><th>5-2</th><th>6-1</th><th>6-2</th><th>5系消耗</th><th>6系消耗</th></tr>
+<tr><td>8</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a518"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a528"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a618"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a628"></td>
+<td rowspan="2" id="o_p2_a_5"></td>
+<td rowspan="2" id="o_p2_a_6"></td></tr>
+<tr><td>17</td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a5117"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a5217"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a6117"></td>
+<td><input enterkeyhint="next" type="number" inputmode="decimal" class="input-big" id="p2a6217"></td></tr>
+</table></div></div>
+
+<h2>自动生成班报 / 日报</h2>
+<textarea id="report"></textarea>
+
+<button type="button" onclick="copyReport()" style="margin-top:8px;width:100%;height:44px;font-size:16px;">📋 一键复制班报</button>
+
+<div class="footer">计算版本：V1.1.4-恢复自动保存+复制</div>
+
+<script>
+function n(id){return parseFloat(document.getElementById(id).value)||0}
+
+/* === 自动保存 === */
+function save(){
+ const data={};
+ document.querySelectorAll('input,textarea').forEach(e=>data[e.id]=e.value);
+ localStorage.setItem('drug_data',JSON.stringify(data));
+}
+function load(){
+ const data=JSON.parse(localStorage.getItem('drug_data')||'{}');
+ Object.keys(data).forEach(id=>{
+  const e=document.getElementById(id);
+  if(e) e.value=data[id];
+ });
+}
+
+/* === 计算（原样保留） === */
+function calc(){
+ const p1m12=(n('p1m117')-n('p1m18')+n('p1m217')-n('p1m28'))*n('c_p1_m')/100*1000;
+ const p1m34=(n('p1m317')-n('p1m38')+n('p1m417')-n('p1m48'))*n('c_p1_m')/100*1000;
+ const p1a12=(n('p1a117')-n('p1a18')+n('p1a217')-n('p1a28'))*n('c_p1_a')/100*1000;
+ const p1a34=(n('p1a317')-n('p1a38')+n('p1a417')-n('p1a48'))*n('c_p1_a')/100*1000;
+ const p2m5=(n('p2m5117')-n('p2m518')+n('p2m5217')-n('p2m528'))*n('c_p2_m')/100*1000;
+ const p2m6=(n('p2m6117')-n('p2m618')+n('p2m6217')-n('p2m628'))*n('c_p2_m')/100*1000;
+ const p2a5=(n('p2a5117')-n('p2a518')+n('p2a5217')-n('p2a528'))*n('c_p2_a')/100*1000;
+ const p2a6=(n('p2a6117')-n('p2a618')+n('p2a6217')-n('p2a628'))*n('c_p2_a')/100*1000;
+
+ document.getElementById('o_p1_m_12').innerText=p1m12.toFixed(2);
+ document.getElementById('o_p1_m_34').innerText=p1m34.toFixed(2);
+ document.getElementById('o_p1_a_12').innerText=p1a12.toFixed(2);
+ document.getElementById('o_p1_a_34').innerText=p1a34.toFixed(2);
+ document.getElementById('o_p2_m_5').innerText=p2m5.toFixed(2);
+ document.getElementById('o_p2_m_6').innerText=p2m6.toFixed(2);
+ document.getElementById('o_p2_a_5').innerText=p2a5.toFixed(2);
+ document.getElementById('o_p2_a_6').innerText=p2a6.toFixed(2);
+
+ document.getElementById('report').value =
+`药剂消耗日报
+一期混凝：一二系${p1m12.toFixed(2)} / 三四系${p1m34.toFixed(2)}（合计：${(p1m12+p1m34).toFixed(2)}）
+一期助凝：一二系${p1a12.toFixed(2)} / 三四系${p1a34.toFixed(2)}（合计：${(p1a12+p1a34).toFixed(2)}）
+二期混凝：五系${p2m5.toFixed(2)} / 六系${p2m6.toFixed(2)}（合计：${(p2m5+p2m6).toFixed(2)}）
+二期助凝：五系${p2a5.toFixed(2)} / 六系${p2a6.toFixed(2)}（合计：${(p2a5+p2a6).toFixed(2)}）`;
+ save();
+}
+
+/* === 一键复制 === */
+function copyReport(){
+ const t=document.getElementById('report');
+ t.select();
+ t.setSelectionRange(0,99999);
+ document.execCommand('copy');
+ alert('班报内容已复制');
+}
+
+document.querySelectorAll('input,textarea').forEach(e=>e.addEventListener('input',calc));
+load();
+calc();
+</script>
+
+
+<script>
+/* === 输入完成后自动跳到下一个输入框 === */
+(function(){
+  const inputs = Array.from(document.querySelectorAll('input'));
+  inputs.forEach((el, idx) => {
+    el.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const next = inputs[idx + 1];
+        if(next){
+          next.focus();
+          next.select();
+        }
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
